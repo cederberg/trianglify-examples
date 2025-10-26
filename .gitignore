@@ -1,0 +1,9 @@
+# General
+.DS_Store
+
+# Build artifacts
+/node_modules/
+/package-lock.json
+
+# Generated files
+/generated-files/

@@ -1,0 +1,13 @@
+{
+  "name": "trianglify-examples",
+  "version": "1.0.0",
+  "description": "Examples and tool for generating trianglify SVG patterns (macOS only)",
+  "type": "module",
+  "main": "start.js",
+  "dependencies": {
+    "trianglify": "^4.1.1"
+  },
+  "bin": {
+    "trianglify-examples": "./start.js"
+  }
+}
