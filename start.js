@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Generate trianglify SVG patterns
 // Usage: node start.js [--settings <json>] [count]
-//   --settings: JSON string with trianglify settings
+//   --settings: JSON string with initial settings
 //   count: Number of examples to generate (1-100, default: 1)
 
 import fs from 'fs';

@@ -26,4 +26,5 @@ Thereafter the basic node packages can be installed:
 
 Or directly via node:
 
-    ./start.js --settings '{"xColors":["#c84d79","#fae5e5","#6f223e"}' 10
+    /opt/homebrew/opt/node@20/bin/node \
+        ./start.js --settings '{"xColors":["#c84d79","#fae5e5","#6f223e"]}' 10
