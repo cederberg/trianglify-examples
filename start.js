@@ -1,5 +1,7 @@
+#!/usr/bin/env node
 // Generate trianglify SVG patterns
-// Usage: node start.js [count]
+// Usage: node start.js [--settings <json>] [count]
+//   --settings: JSON string with trianglify settings
 //   count: Number of examples to generate (1-100, default: 1)
 
 import fs from 'fs';
@@ -11,12 +13,30 @@ const colorbrewer = trianglify.utils.colorbrewer;
 // Parse command line arguments
 const args = process.argv.slice(2);
 let count = 1;
-if (args.length > 0) {
-    count = parseInt(args[0], 10)
-    if (isNaN(count) || count < 1 || count > 100) {
-        console.error('Error: Count must be a number between 1 and 100')
-        console.error('Usage: node start.js [count]')
-        process.exit(1)
+let settings = {
+    width: 1000,
+    height: 1000,
+};
+for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--settings') {
+        if (i + 1 >= args.length) {
+            console.error('Error: --settings requires a JSON argument');
+            process.exit(1);
+        }
+        try {
+            Object.assign(settings, JSON.parse(args[i + 1]));
+        } catch (e) {
+            console.error('Error: Invalid JSON in --settings argument');
+            process.exit(1);
+        }
+        i++; // Skip the JSON argument
+    } else if (!isNaN(parseInt(args[i], 10))) {
+        count = parseInt(args[i], 10);
+        if (count < 1 || count > 100) {
+            console.error('Error: Count must be a number between 1 and 100');
+            console.error('Usage: node start.js [--settings <json>] [count]');
+            process.exit(1);
+        }
     }
 }
 
@@ -65,16 +85,15 @@ const randomPalettes = Array(25).fill(null).map(makeRandomPalette);
 const palettes = [...Object.values(colorbrewer), ...randomPalettes];
 const start = countFiles(outputDir, svgFilename('.*'));
 for (let i = 0; i < count; i++) {
-    const settings = {
-        width: 1000,
-        height: 1000,
+    let opts = {
         cellSize: randomInt(25, 75),
         xColors: palettes[Math.floor(Math.random() * palettes.length)],
         variance: randomInt(50, 100) / 100,
-        seed: Math.random()
+        seed: Math.random(),
+        ...settings,
     };
-    const svg = trianglify(settings).toSVG();
-    const comment = `<!-- Trianglify Settings: ${JSON.stringify(settings)} -->\n\n`;
+    const svg = trianglify(opts).toSVG();
+    const comment = `<!-- Trianglify Settings: ${JSON.stringify(opts)} -->\n\n`;
     const filename = svgFilename(start + i);
     const filepath = path.join(outputDir, filename);
     fs.writeFileSync(filepath, comment + svg);
